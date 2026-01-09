@@ -1,0 +1,65 @@
+// Para deixar espaçado: Npx prisma format
+// para sincronizar com o sistema: npx prisma migrate dev --name init_db
+// init_db e o nome que voce vai escolher
+
+//“O mapa do banco de dados do meu sistema”
+
+// Ele é responsável por 3 coisas principais:
+
+// Definir como o Prisma vai gerar o client
+
+// Definir como o Prisma se conecta ao banco
+
+// Definir as tabelas (models) e relações do banco
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+//Para criar a tabela user:
+model User {
+  id        String    @id @default(uuid())
+  email     String
+  name      String
+  bookings  Booking[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Barbershop {
+  id          String              @id @default(uuid())
+  name        String
+  address     String
+  phones      String[]
+  description String
+  imageUrl    String
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  services    BarbershopService[] // Para referenciar relação
+}
+
+model BarbershopService {
+  id           String     @id @default(uuid())
+  name         String
+  description  String
+  imageUrl     String
+  price        Decimal    @db.Decimal(10, 2)
+  barbershopId String
+  barbershop   Barbershop @relation(fields: [barbershopId], references: [id]) // Para referenciar relação
+  bookings     Booking[]
+}
+
+model Booking {
+  id        String            @id @default(uuid())
+  userId    String
+  serviceId String
+  service   BarbershopService @relation(fields: [serviceId], references: [id])
+  date      DateTime
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  user      User              @relation(fields: [userId], references: [id])
+}
