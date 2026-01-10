@@ -2,6 +2,7 @@ import { Input } from "./_components/ui/input"
 import Header from "./_components/header"
 import { Button } from "./_components/ui/button"
 import { SearchIcon } from "lucide-react"
+import Image from "next/image"
 
 const Home = () => {
   return (
@@ -17,6 +18,14 @@ const Home = () => {
           <Button>
             <SearchIcon />
           </Button>
+        </div>
+        <div className="relative mt-6 h-[150px] w-full">
+          <Image
+            alt="agende nos melhores FSW Barber"
+            src="/banner-01.png"
+            fill
+            className="rounded-xl object-cover"
+          />
         </div>
       </div>
     </div>
