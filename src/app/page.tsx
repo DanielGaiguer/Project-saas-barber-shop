@@ -13,6 +13,11 @@ const Home = async () => {
   // chamar meu banco de dados
   // Como isso e renderizado no servidor, você pode chamar o banco aqui
   const barbershops = await db.barbershop.findMany({})
+  const popularBarbershops = await db.barbershop.findMany({
+    orderBy: {
+      name: "desc",
+    },
+  })
   //console.log({ barbershops })
   return (
     <div>
@@ -72,6 +77,18 @@ const Home = async () => {
         </h2>
         <div className="flex gap-4 overflow-auto [&::-webkit-scrollbar]:hidden">
           {barbershops.map((barbershopItem) => (
+            <BarbershopItem
+              key={barbershopItem.id}
+              barbershop={barbershopItem}
+            />
+          ))}
+        </div>
+
+        <h2 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">
+          Populares
+        </h2>
+        <div className="flex gap-4 overflow-auto [&::-webkit-scrollbar]:hidden">
+          {popularBarbershops.map((barbershopItem) => (
             <BarbershopItem
               key={barbershopItem.id}
               barbershop={barbershopItem}
