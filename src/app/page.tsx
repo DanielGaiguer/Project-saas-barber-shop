@@ -1,7 +1,7 @@
 import { Input } from "./_components/ui/input"
 import Header from "./_components/header"
 import { Button } from "./_components/ui/button"
-import { SearchIcon } from "lucide-react"
+import { EyeIcon, FootprintsIcon, SearchIcon } from "lucide-react"
 import Image from "next/image"
 import { Card, CardContent } from "./_components/ui/card"
 import { Badge } from "./_components/ui/badge"
@@ -25,7 +25,7 @@ const Home = async () => {
       <Header />
       <div className="p-5">
         {/* Texto */}
-        <h2 className="text-xl font-bold">Ola, Daniel</h2>
+        <h2 className="text-xl font-bold">Olá, Daniel</h2>
         <p>Sabado, 10/01/2026</p>
 
         {/* Busca */}
@@ -33,6 +33,39 @@ const Home = async () => {
           <Input placeholder="Faça a sua busca..." />
           <Button>
             <SearchIcon />
+          </Button>
+        </div>
+
+        {/* Busca Rapida */}
+        <div className="mt-6 flex gap-3 overflow-x-scroll [&::-webkit-scrollbar]:hidden">
+          <Button className="gap-2" variant="secondary">
+            <Image src="/cabelo.svg" width={16} height={16} alt="Cabelo" />
+            Cabelo
+          </Button>
+
+          <Button className="gap-2" variant="secondary">
+            <Image src="/barba.svg" width={16} height={16} alt="Barba" />
+            Barba
+          </Button>
+
+          <Button className="gap-2" variant="secondary">
+            <Image
+              src="/acabamento.svg"
+              width={16}
+              height={16}
+              alt="Acabamento"
+            />
+            Acabamento
+          </Button>
+
+          <Button className="gap-2" variant="secondary">
+            <FootprintsIcon size={16} />
+            Pezinho
+          </Button>
+
+          <Button className="gap-2" variant="secondary">
+            <EyeIcon size={16} />
+            Sobrancelha
           </Button>
         </div>
 
