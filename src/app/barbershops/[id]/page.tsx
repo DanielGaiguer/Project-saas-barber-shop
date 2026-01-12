@@ -12,15 +12,30 @@ interface BarbershopPageProps {
 }
 
 const BarbershopPage = async ({ params }: BarbershopPageProps) => {
+  // A partir dets include, voce diz para o prisma, incluir dados de outra tabela, tabela services, e ele consegue fazer isso de forma automatica pois tem relacao com a tabela, e definimos isso no esquema do prisma
+  // Diz ao Prisma: "Além dos dados do barbershop, traga também os services relacionados"
+  // Internamente, o Prisma transforma isso em algo parecido com:
+  // SELECT *
+  // FROM "Barbershop"
+  // LEFT JOIN "Service"
+  // ON "Service"."barbershopId" = "Barbershop"."id"
+  // WHERE "Barbershop"."id" = 'abc-123';
+
+  // ⚠️ Você não escreve o SQL, mas ele acontece.
   const barbershop = await db.barbershop.findUnique({
     where: {
       id: params.id,
+    },
+    include: {
+      services: true,
     },
   })
 
   if (!barbershop) {
     return notFound()
   }
+
+  console.log(barbershop?.services)
 
   return (
     <div>
