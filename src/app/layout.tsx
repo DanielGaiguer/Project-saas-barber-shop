@@ -3,6 +3,10 @@ import type { Metadata } from "next"
 import "./globals.css"
 import { Toaster } from "sonner"
 import Footer from "./_components/footer"
+import { Inter } from "next/font/google"
+import AuthProvider from "./_providers/auth"
+
+const inter = Inter({ subsets: ["latin"] })
 
 // const geistSans = localFont({
 //   src: "./fonts/GeistVF.woff",
@@ -26,12 +30,14 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body className={"dark"}>
-        {children}
-        <Toaster />
-        <Footer />
-      </body>
+    <html lang="en" className="dark">
+      <AuthProvider>
+        <body className={inter.className}>
+          {children}
+          <Toaster />
+          <Footer />
+        </body>
+      </AuthProvider>
     </html>
   )
 }
