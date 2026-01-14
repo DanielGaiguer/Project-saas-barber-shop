@@ -1,12 +1,14 @@
 "use client"
 
-import { BarbershopService } from "@prisma/client"
+import { Barbershop, BarbershopService } from "@prisma/client"
 import Image from "next/image"
 import { Button } from "./ui/button"
 import { Card, CardContent } from "./ui/card"
 import {
   Sheet,
+  SheetClose,
   SheetContent,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -14,13 +16,46 @@ import {
 import { ptBR } from "date-fns/locale"
 import { Calendar } from "./ui/calendar"
 import { useState } from "react"
+import { format } from "date-fns"
 
 interface ServiceItemProps {
   service: BarbershopService
+  barbershop: Pick<Barbershop, "name">
 }
 
-const ServiceItem = ({ service }: ServiceItemProps) => {
+const TIME_LIST = [
+  "08:00",
+  "08:30",
+  "09:00",
+  "09:30",
+  "10:00",
+  "10:30",
+  "11:00",
+  "11:30",
+  "12:00",
+  "12:30",
+  "13:00",
+  "13:30",
+  "14:00",
+  "14:30",
+  "15:00",
+  "15:30",
+  "16:00",
+  "16:30",
+  "17:00",
+  "17:30",
+  "18:00",
+]
+
+const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
   const [selectedDay, setSelectedDay] = useState<Date | undefined>(undefined)
+  const [selectedTime, setSelectedTime] = useState<string | undefined>(
+    undefined,
+  )
+
+  const handleTimeSelect = (time: string | undefined) => {
+    setSelectedTime(time)
+  }
 
   const handleDateSelect = (date: Date | undefined) => {
     setSelectedDay(date)
@@ -57,12 +92,12 @@ const ServiceItem = ({ service }: ServiceItemProps) => {
                   Reservar
                 </Button>
               </SheetTrigger>
-              <SheetContent>
+              <SheetContent className="h-full w-[70%] max-w-md overflow-y-auto p-0 px-0 sm:max-w-lg [&::-webkit-scrollbar]:hidden">
                 <SheetHeader>
                   <SheetTitle>Fazer Reserva</SheetTitle>
                 </SheetHeader>
 
-                <div className="py-5">
+                <div className="flex justify-center border-b border-solid py-5">
                   <Calendar
                     mode="single"
                     locale={ptBR}
@@ -93,6 +128,68 @@ const ServiceItem = ({ service }: ServiceItemProps) => {
                     }}
                   />
                 </div>
+
+                {selectedDay && (
+                  <div className="flex gap-3 overflow-x-auto border-b border-solid p-5 px-5 [&::-webkit-scrollbar]:hidden">
+                    {TIME_LIST.map((time) => (
+                      <Button
+                        key={time}
+                        variant={selectedTime === time ? "default" : "outline"}
+                        className="rounded-full"
+                        onClick={() => handleTimeSelect(time)}
+                      >
+                        {time}
+                      </Button>
+                    ))}
+                  </div>
+                )}
+
+                {selectedTime && selectedDay && (
+                  <div className="p-5">
+                    <Card>
+                      <CardContent className="space-y-3 p-3">
+                        <div className="flex items-center justify-between">
+                          <h2 className="font-bold">{service.name}</h2>
+                          <p className="text-sm font-bold">
+                            {Intl.NumberFormat("pt-BR", {
+                              style: "currency",
+                              currency: "BRL",
+                            }).format(Number(service.price))}
+                          </p>
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <h2 className="text-sm text-gray-400">Data</h2>
+                          <p className="text-sm">
+                            {format(selectedDay, "d 'de' MMMM", {
+                              locale: ptBR,
+                            })}
+                          </p>
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <h2 className="text-sm text-gray-400">Horário</h2>
+                          <p className="text-sm">{selectedTime}</p>
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <h2 className="text-sm text-gray-400">Barbearia</h2>
+                          <p className="text-sm">{barbershop.name}</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
+
+                {selectedDay && selectedTime && (
+                  <SheetFooter className="m-6 px-5">
+                    <SheetClose>
+                      <Button type="submit" className="w-[90%]">
+                        Confirmar
+                      </Button>
+                    </SheetClose>
+                  </SheetFooter>
+                )}
               </SheetContent>
             </Sheet>
           </div>
