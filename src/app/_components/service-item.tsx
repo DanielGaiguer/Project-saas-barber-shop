@@ -93,7 +93,7 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
                 </Button>
               </SheetTrigger>
               <SheetContent className="h-full w-[70%] max-w-md overflow-y-auto p-0 px-0 sm:max-w-lg [&::-webkit-scrollbar]:hidden">
-                <SheetHeader>
+                <SheetHeader className="mt-5">
                   <SheetTitle>Fazer Reserva</SheetTitle>
                 </SheetHeader>
 
@@ -103,6 +103,7 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
                     locale={ptBR}
                     selected={selectedDay}
                     onSelect={handleDateSelect}
+                    className="w-[80%]"
                     styles={{
                       head_cell: {
                         width: "100%",
