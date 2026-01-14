@@ -1,4 +1,4 @@
-"user server"
+"use server"
 import { endOfDay, startOfDay } from "date-fns"
 import { db } from "../_lib/prisma"
 
