@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { Barbershop, BarbershopService } from "@prisma/client"
@@ -16,7 +17,10 @@ import {
 import { ptBR } from "date-fns/locale"
 import { Calendar } from "./ui/calendar"
 import { useState } from "react"
-import { format } from "date-fns"
+import { format, set } from "date-fns"
+import { createBooking } from "../_actions/create-booking"
+import { useSession } from "next-auth/react"
+import { toast } from "sonner"
 
 interface ServiceItemProps {
   service: BarbershopService
@@ -48,6 +52,7 @@ const TIME_LIST = [
 ]
 
 const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
+  const { data } = useSession()
   const [selectedDay, setSelectedDay] = useState<Date | undefined>(undefined)
   const [selectedTime, setSelectedTime] = useState<string | undefined>(
     undefined,
@@ -59,6 +64,27 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
 
   const handleDateSelect = (date: Date | undefined) => {
     setSelectedDay(date)
+  }
+
+  const handleCreateBooking = async () => {
+    try {
+      if (!selectedDay || !selectedTime) return
+      const hour = selectedTime.split(":")[0]
+      const minute = selectedTime.split(":")[1]
+      const newDate = set(selectedDay, {
+        minutes: Number(minute),
+        hours: Number(hour),
+      })
+      await createBooking({
+        serviceId: service.id,
+        userId: (data?.user as any).id,
+        date: newDate,
+      })
+      toast.success("Reserva criada com sucesso!")
+    } catch (e) {
+      console.log(e)
+      toast.error("Erro ao criar reserva.")
+    }
   }
 
   return (
@@ -182,15 +208,17 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
                   </div>
                 )}
 
-                {selectedDay && selectedTime && (
-                  <SheetFooter className="m-6 px-5">
-                    <SheetClose>
-                      <Button type="submit" className="w-[90%]">
-                        Confirmar
-                      </Button>
-                    </SheetClose>
-                  </SheetFooter>
-                )}
+                <SheetFooter className="m-6 px-5">
+                  <SheetClose>
+                    <Button
+                      className="w-[90%]"
+                      onClick={handleCreateBooking}
+                      disabled={!selectedDay || !selectedTime}
+                    >
+                      Confirmar
+                    </Button>
+                  </SheetClose>
+                </SheetFooter>
               </SheetContent>
             </Sheet>
           </div>
