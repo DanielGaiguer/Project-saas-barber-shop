@@ -1,3 +1,5 @@
+"use client"
+
 import { Card, CardContent } from "./ui/card"
 import { Badge } from "./ui/badge"
 import { Avatar, AvatarImage } from "./ui/avatar"
@@ -26,6 +28,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog"
+import { deleteBooking } from "../_actions/delete-booking"
+import { toast } from "sonner"
+import { useState } from "react"
 
 interface BookingItemProps {
   // Esta e a sintaxe para o Prisma entender que este agendamento, tambem vai ter o servico incluido? Lembrando que no schema do db, ele ja tem relacao, isso e obrigatorio
@@ -43,13 +48,29 @@ interface BookingItemProps {
 
 // ToDo receber agendamento como prop
 const BookingItem = ({ booking }: BookingItemProps) => {
+  const [isSheetOpen, setIsSheetOpen] = useState(false)
   const isConfirmed = isFuture(booking.date)
   const {
     service: { barbershop },
   } = booking
+
+  const handleCancelBookingClick = async () => {
+    try {
+      await deleteBooking(booking.id)
+      setIsSheetOpen(false)
+      toast.success("Reserva cancelada com sucesso!")
+    } catch (e) {
+      toast.error("Erro ao cancelar a reserva. Tente novamente,")
+      console.log(e)
+    }
+  }
+
+  const handleSheetsOpenChange = (isOpen: boolean) => {
+    setIsSheetOpen(isOpen)
+  }
   return (
     <>
-      <Sheet>
+      <Sheet open={isSheetOpen} onOpenChange={handleSheetsOpenChange}>
         <SheetTrigger className="w-full">
           <Card className="min-w-[90%]">
             <CardContent className="flex justify-between p-0">
@@ -84,7 +105,7 @@ const BookingItem = ({ booking }: BookingItemProps) => {
             </CardContent>
           </Card>
         </SheetTrigger>
-        <SheetContent className="max-h-screen w-[90%] overflow-y-auto [&::-webkit-scrollbar]:hidden">
+        <SheetContent className="max-h-screen w-[85%] overflow-y-auto [&::-webkit-scrollbar]:hidden">
           <SheetHeader>
             <SheetTitle className="text-left">
               Informacões da Reserva
@@ -170,7 +191,7 @@ const BookingItem = ({ booking }: BookingItemProps) => {
               </SheetClose>
               {isConfirmed && (
                 <Dialog>
-                  <DialogTrigger asChild>
+                  <DialogTrigger asChild className="w-full">
                     <Button variant="destructive" className="w-full">
                       Cancelar Reserva
                     </Button>
@@ -191,9 +212,15 @@ const BookingItem = ({ booking }: BookingItemProps) => {
                           Voltar
                         </Button>
                       </DialogClose>
-                      <Button variant="destructive" className="w-full">
-                        Confrimar
-                      </Button>
+                      <DialogClose className="w-full">
+                        <Button
+                          className="w-full"
+                          variant="destructive"
+                          onClick={handleCancelBookingClick}
+                        >
+                          Confrimar
+                        </Button>
+                      </DialogClose>
                     </DialogFooter>
                   </DialogContent>
                 </Dialog>
