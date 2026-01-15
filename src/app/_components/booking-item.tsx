@@ -16,6 +16,16 @@ import {
 import Image from "next/image"
 import PhoneItem from "./phone-item"
 import { Button } from "./ui/button"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog"
 
 interface BookingItemProps {
   // Esta e a sintaxe para o Prisma entender que este agendamento, tambem vai ter o servico incluido? Lembrando que no schema do db, ele ja tem relacao, isso e obrigatorio
@@ -159,9 +169,34 @@ const BookingItem = ({ booking }: BookingItemProps) => {
                 </Button>
               </SheetClose>
               {isConfirmed && (
-                <Button className="w-full" variant="destructive">
-                  Cancelar Reserva
-                </Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="destructive" className="w-full">
+                      Cancelar Reserva
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="w-[90%]">
+                    <DialogHeader>
+                      <DialogTitle>
+                        Você deseja cancelar a sua reserva?
+                      </DialogTitle>
+                      <DialogDescription>
+                        Ao cancelar, você perderá a sua reserva e não poderá
+                        recuperá-la. Essa ação é irreversível.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="flex flex-row gap-3">
+                      <DialogClose asChild>
+                        <Button variant="secondary" className="w-full">
+                          Voltar
+                        </Button>
+                      </DialogClose>
+                      <Button variant="destructive" className="w-full">
+                        Confrimar
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               )}
             </div>
           </SheetFooter>
