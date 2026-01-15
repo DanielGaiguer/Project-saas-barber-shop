@@ -6,13 +6,16 @@ import { format, isFuture } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import {
   Sheet,
+  SheetClose,
   SheetContent,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet"
 import Image from "next/image"
 import PhoneItem from "./phone-item"
+import { Button } from "./ui/button"
 
 interface BookingItemProps {
   // Esta e a sintaxe para o Prisma entender que este agendamento, tambem vai ter o servico incluido? Lembrando que no schema do db, ele ja tem relacao, isso e obrigatorio
@@ -148,6 +151,20 @@ const BookingItem = ({ booking }: BookingItemProps) => {
               ))}
             </div>
           </div>
+          <SheetFooter className="mt-6">
+            <div className="flex items-center gap-3">
+              <SheetClose asChild>
+                <Button className="w-full" variant="outline">
+                  Voltar
+                </Button>
+              </SheetClose>
+              {isConfirmed && (
+                <Button className="w-full" variant="destructive">
+                  Cancelar Reserva
+                </Button>
+              )}
+            </div>
+          </SheetFooter>
         </SheetContent>
       </Sheet>
     </>
