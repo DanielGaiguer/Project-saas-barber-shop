@@ -32,9 +32,11 @@ const Bookings = async () => {
       <Header />
       <div className="p-5">
         <h1 className="text-xl font-bold">Agendamentos</h1>
-        {bookings.map((booking) => (
-          <BookingItem key={booking.id} booking={booking} />
-        ))}
+        <div className="space-y-3 p-5">
+          {bookings.map((booking) => (
+            <BookingItem key={booking.id} booking={booking} />
+          ))}
+        </div>
       </div>
     </>
   )

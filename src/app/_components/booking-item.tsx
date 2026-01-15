@@ -21,9 +21,6 @@ interface BookingItemProps {
 const BookingItem = ({ booking }: BookingItemProps) => {
   return (
     <>
-      <h2 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">
-        Agendamentos
-      </h2>
       <Card>
         <CardContent className="flex justify-between p-0">
           {/* Esquerda */}
