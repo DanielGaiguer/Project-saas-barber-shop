@@ -10,6 +10,8 @@ import Search from "./_components/search"
 import Link from "next/link"
 import { authOptions } from "./_lib/auth"
 import { getServerSession } from "next-auth"
+import { format } from "date-fns"
+import { ptBR } from "date-fns/locale"
 
 const Home = async () => {
   const session = await getServerSession(authOptions)
@@ -47,8 +49,19 @@ const Home = async () => {
       <Header />
       <div className="p-5">
         {/* Texto */}
-        <h2 className="text-xl font-bold">Olá, Daniel!</h2>
+        <h2 className="text-xl font-bold">
+          Olá, {session?.user ? session?.user.name : "Bem vindo"}!
+        </h2>
         <p>Sabado, 10/01/2026</p>
+        <p>
+          <span className="capitalize">
+            {format(new Date(), "EEEE, dd ", { locale: ptBR })}
+          </span>
+          <span>de </span>
+          <span className="capitalize">
+            {format(new Date(), "MMMM", { locale: ptBR })}
+          </span>
+        </p>
 
         {/* Busca */}
         <div className="mt-6">
