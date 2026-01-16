@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { getServerSession } from "next-auth"
 import Header from "../_components/header"
-import { db } from "../_lib/prisma"
 import { authOptions } from "../_lib/auth"
 import { notFound } from "next/navigation"
 import BookingItem from "../_components/booking-item"
+import { getConfirmedBookings } from "../_data/get-confirmed-bookings"
+import { getConcludedBookings } from "../_data/get-concluded-bookings"
 
 const Bookings = async () => {
   // AuthOption e o o objeto de configuracao do Next Auth
@@ -13,47 +14,9 @@ const Bookings = async () => {
     //ToDo Mostrar pop-up de Login
     return notFound()
   }
-  const confirmedBookings = await db.booking.findMany({
-    where: {
-      userId: (session?.user as any).id,
-      date: {
-        gte: new Date(), // Se for maior que a data atual
-      },
-    },
-    include: {
-      service: {
-        // Isso vai incluir todos os dados do servico
-        include: {
-          //isso vai fazer o servico, incluir todos os dados da barbearia
-          barbershop: true,
-        },
-      },
-    }, //Tudo isso ja esta bem relacionado no banco de dados, isso e essencial para realizar isso
-    orderBy: {
-      date: "asc", // Vai ordenar as datas de forma crescente
-    },
-  })
+  const confirmedBookings = await getConfirmedBookings()
 
-  const concludedBookings = await db.booking.findMany({
-    where: {
-      userId: (session?.user as any).id,
-      date: {
-        lte: new Date(), // Se for menor que a data atual
-      },
-    },
-    include: {
-      service: {
-        // Isso vai incluir todos os dados do servico
-        include: {
-          //isso vai fazer o servico, incluir todos os dados da barbearia
-          barbershop: true,
-        },
-      },
-    }, //Tudo isso ja esta bem relacionado no banco de dados, isso e essencial para realizar isso
-    orderBy: {
-      date: "asc", // Vai ordenar as datas de forma crescente
-    },
-  })
+  const concludedBookings = await getConcludedBookings()
 
   return (
     <>
