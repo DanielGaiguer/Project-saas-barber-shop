@@ -52,7 +52,6 @@ const Home = async () => {
         <h2 className="text-xl font-bold">
           Olá, {session?.user ? session?.user.name : "Bem vindo"}!
         </h2>
-        <p>Sabado, 10/01/2026</p>
         <p>
           <span className="capitalize">
             {format(new Date(), "EEEE, dd ", { locale: ptBR })}
